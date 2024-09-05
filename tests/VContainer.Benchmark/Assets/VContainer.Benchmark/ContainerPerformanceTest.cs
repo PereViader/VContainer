@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using ManualDi.Main;
+using NUnit.Framework;
 using Unity.PerformanceTesting;
 using VContainer;
 using VContainer.Benchmark.Fixtures;
@@ -70,6 +71,26 @@ namespace Vcontainer.Benchmark
                 .SampleGroup("VContainer")
                 .GC()
                 .Run();
+
+            var manualDiBuilder = new DiContainerBindings();
+            manualDiBuilder.Bind<ISingleton1, Singleton1>().Default().FromConstructor();
+            manualDiBuilder.Bind<ISingleton2, Singleton2>().Default().FromConstructor();
+            manualDiBuilder.Bind<ISingleton3, Singleton3>().Default().FromConstructor();
+            var manualDiContainer = manualDiBuilder.Build();
+
+            Measure
+                .Method(() =>
+                {
+                    for (var i = 0; i < N; i++)
+                    {
+                        manualDiContainer.Resolve<ISingleton1>();
+                        manualDiContainer.Resolve<ISingleton2>();
+                        manualDiContainer.Resolve<ISingleton3>();
+                    }
+                })
+                .SampleGroup("ManualDi")
+                .GC()
+                .Run();
         }
 
         [Test]
@@ -131,6 +152,26 @@ namespace Vcontainer.Benchmark
                     }
                 })
                 .SampleGroup("VContainer")
+                .GC()
+                .Run();
+            
+            var manualDiBuilder = new DiContainerBindings();
+            manualDiBuilder.Bind<ITransient1, Transient1>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ITransient2, Transient2>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ITransient3, Transient3>().Default().Transient().FromConstructor();
+            var manualDiContainer = manualDiBuilder.Build();
+
+            Measure
+                .Method(() =>
+                {
+                    for (var i = 0; i < N; i++)
+                    {
+                        manualDiContainer.Resolve<ITransient1>();
+                        manualDiContainer.Resolve<ITransient2>();
+                        manualDiContainer.Resolve<ITransient3>();
+                    }
+                })
+                .SampleGroup("ManualDi")
                 .GC()
                 .Run();
         }
@@ -212,6 +253,33 @@ namespace Vcontainer.Benchmark
                     }
                 })
                 .SampleGroup("VContainer")
+                .GC()
+                .Run();
+            
+            
+            var manualDiBuilder = new DiContainerBindings();
+            manualDiBuilder.Bind<ISingleton1, Singleton1>().Default().FromConstructor();
+            manualDiBuilder.Bind<ISingleton2, Singleton2>().Default().FromConstructor();
+            manualDiBuilder.Bind<ISingleton3, Singleton3>().Default().FromConstructor();
+            manualDiBuilder.Bind<ITransient1, Transient1>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ITransient2, Transient2>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ITransient3, Transient3>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ICombined1, Combined1>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ICombined2, Combined2>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ICombined3, Combined3>().Default().Transient().FromConstructor();
+            var manualDiContainer = manualDiBuilder.Build();
+
+            Measure
+                .Method(() =>
+                {
+                    for (var i = 0; i < N; i++)
+                    {
+                        manualDiContainer.Resolve<ICombined1>();
+                        manualDiContainer.Resolve<ICombined2>();
+                        manualDiContainer.Resolve<ICombined3>();
+                    }
+                })
+                .SampleGroup("ManualDi")
                 .GC()
                 .Run();
         }
@@ -304,6 +372,38 @@ namespace Vcontainer.Benchmark
                     // UnityEngine.Profiling.Profiler.EndSample();
                 })
                 .SampleGroup("VContainer")
+                .GC()
+                .Run();
+            
+            
+            var manualDiBuilder = new DiContainerBindings();
+            manualDiBuilder.Bind<IFirstService, FirstService>().Default().FromConstructor();
+            manualDiBuilder.Bind<ISecondService, SecondService>().Default().FromConstructor();
+            manualDiBuilder.Bind<IThirdService, ThirdService>().Default().FromConstructor();
+            manualDiBuilder.Bind<ISubObjectA, SubObjectA>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ISubObjectB, SubObjectB>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ISubObjectC, SubObjectC>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<IComplex1, Complex1>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<IComplex2, Complex2>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<IComplex3, Complex3>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ISubObjectOne, SubObjectOne>().Default().FromConstructor();
+            manualDiBuilder.Bind<ISubObjectTwo, SubObjectTwo>().Default().Transient().FromConstructor();
+            manualDiBuilder.Bind<ISubObjectThree, SubObjectThree>().Default().Transient().FromConstructor();
+            var manualDiContainer = manualDiBuilder.Build();
+
+            Measure
+                .Method(() =>
+                {
+                    // UnityEngine.Profiling.Profiler.BeginSample("VContainer Resolve(Complex)");
+                    for (var i = 0; i < N; i++)
+                    {
+                        manualDiContainer.Resolve<IComplex1>();
+                        manualDiContainer.Resolve<IComplex2>();
+                        manualDiContainer.Resolve<IComplex3>();
+                    }
+                    // UnityEngine.Profiling.Profiler.EndSample();
+                })
+                .SampleGroup("ManualDi")
                 .GC()
                 .Run();
         }
@@ -413,6 +513,31 @@ namespace Vcontainer.Benchmark
                     }
                 })
                 .SampleGroup("VContainer")
+                .GC()
+                .Run();
+            
+            Measure
+                .Method(() =>
+                {
+                    for (var i = 0; i < N; i++)
+                    {
+                        var builder = new DiContainerBindings();
+                        builder.Bind<IFirstService, FirstService>().Default().FromConstructor();
+                        builder.Bind<ISecondService, SecondService>().Default().FromConstructor();
+                        builder.Bind<IThirdService, ThirdService>().Default().FromConstructor();
+                        builder.Bind<ISubObjectA, SubObjectA>().Default().Transient().FromConstructor();
+                        builder.Bind<ISubObjectB, SubObjectB>().Default().Transient().FromConstructor();
+                        builder.Bind<ISubObjectC, SubObjectC>().Default().Transient().FromConstructor();
+                        builder.Bind<IComplex1, Complex1>().Default().Transient().FromConstructor();
+                        builder.Bind<IComplex2, Complex2>().Default().Transient().FromConstructor();
+                        builder.Bind<IComplex3, Complex3>().Default().Transient().FromConstructor();
+                        builder.Bind<ISubObjectOne, SubObjectOne>().Default().Transient().FromConstructor();
+                        builder.Bind<ISubObjectTwo, SubObjectTwo>().Default().Transient().FromConstructor();
+                        builder.Bind<ISubObjectThree, SubObjectThree>().Default().Transient().FromConstructor();
+                        _ = builder.Build();
+                    }
+                })
+                .SampleGroup("ManualDi")
                 .GC()
                 .Run();
         }
